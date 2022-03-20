@@ -1,10 +1,11 @@
-package com.yeahbutstill.restfulwebservices.domain.dao;
+package com.yeahbutstill.restfulwebservices.service;
 
 import com.yeahbutstill.restfulwebservices.beans.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -34,6 +35,18 @@ public class UserDaoService {
     public User findOne(Integer id) {
         for (User user : users) {
             if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User deleteById(Integer id) {
+        Iterator<User> iterator = users.iterator();
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+            if (user.getId() == id) {
+                iterator.remove();
                 return user;
             }
         }
