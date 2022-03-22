@@ -1,4 +1,5 @@
-insert into user values(1, sysdate(), 'AB');
-insert into user values(2, sysdate(), 'BA');
-insert into user values(3, sysdate(), 'Jack');
-insert into user values(4, sysdate(), 'Jill');
+insert into user values(1001, sysdate(), 'Dani');
+insert into user values(1002, sysdate(), 'Maya');
+insert into user values(1003, sysdate(), 'Winda');
+insert into user values(1004, sysdate(), 'Nayla');
+insert into user values(1005, sysdate(), 'Yasmin');

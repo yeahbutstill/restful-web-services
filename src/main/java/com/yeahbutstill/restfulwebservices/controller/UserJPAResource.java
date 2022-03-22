@@ -3,7 +3,6 @@ package com.yeahbutstill.restfulwebservices.controller;
 import com.yeahbutstill.restfulwebservices.beans.User;
 import com.yeahbutstill.restfulwebservices.exceptions.UserNotFoundException;
 import com.yeahbutstill.restfulwebservices.repository.UserRepository;
-import com.yeahbutstill.restfulwebservices.service.UserDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -18,9 +17,6 @@ import java.util.Optional;
 
 @RestController
 public class UserJPAResource {
-
-    @Autowired
-    private UserDaoService service;
 
     @Autowired
     private UserRepository userRepository;
@@ -54,7 +50,7 @@ public class UserJPAResource {
     // output - CREATED & Return the created URI
     @PostMapping("/jpa/users")
     public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
-        User saveUser = service.save(user);
+        User saveUser = userRepository.save(user);
         // CREATED
         // /users/{id}   savedUser.getId
         URI location = ServletUriComponentsBuilder
@@ -68,11 +64,7 @@ public class UserJPAResource {
 
     @DeleteMapping("/jpa/users/{id}")
     public void deleteUser(@PathVariable Integer id) {
-        User user = service.deleteById(id);
-
-        if (user == null) {
-            throw new UserNotFoundException("id-" + id);
-        }
+        userRepository.deleteById(id);
     }
 
 }
