@@ -1,7 +1,9 @@
 package com.yeahbutstill.restfulwebservices.controller;
 
 import com.yeahbutstill.restfulwebservices.beans.User;
+import com.yeahbutstill.restfulwebservices.domain.dao.Post;
 import com.yeahbutstill.restfulwebservices.exceptions.UserNotFoundException;
+import com.yeahbutstill.restfulwebservices.repository.PostRepository;
 import com.yeahbutstill.restfulwebservices.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -20,6 +22,9 @@ public class UserJPAResource {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     // GET /users
     // retrieveAllUsers
@@ -57,6 +62,40 @@ public class UserJPAResource {
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(saveUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> retrieveAllPostUsers(@PathVariable Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        return userOptional.get().getPosts();
+    }
+
+    @PostMapping("/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createPost(@PathVariable Integer id, @RequestBody Post post) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            throw new UserNotFoundException("id-" + id);
+        }
+
+        User user = userOptional.get();
+
+        post.setUser(user);
+
+        postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(post.getId())
                 .toUri();
 
         return ResponseEntity.created(location).build();
